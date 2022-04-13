@@ -21,12 +21,11 @@ func CreateToDo(app firebase.App, client firestore.Client, ctx context.Context, 
 	}
 
 	fmt.Println(todoData.ID.String())
-	_, err := client.Collection("ToDo").Doc(todoData.ID.String()).Set(ctx, map[string]interface{}{
+	_, err := client.Collection("ToDo").NewDoc().Create(ctx, map[string]interface{}{
+		"id":        todoData.ID.String(),
 		"name":      todoData.Name,
 		"createdAt": todoData.CreatedAt,
 	})
-
-	defer client.Close()
 
 	if err != nil {
 		services.LogError(err)

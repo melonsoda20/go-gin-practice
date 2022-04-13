@@ -22,7 +22,5 @@ func ConnectFirestore() (c *firebase.App, f_c *firestore.Client, err error) {
 		return nil, nil, err
 	}
 
-	defer client.Close()
-
 	return app, client, err
 }
