@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	firestore "cloud.google.com/go/firestore"
-	firebase "firebase.google.com/go"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,8 +21,8 @@ func CreateToDo(c *gin.Context) {
 		return
 	}
 
-	firebase_db, _ := c.Get("firebase_db")
-	app := firebase_db.(firebase.App)
+	// firebase_db, _ := c.Get("firebase_db")
+	// app := firebase_db.(firebase.App)
 
 	firestore_client, _ := c.Get("firestore_client")
 	client := firestore_client.(firestore.Client)
@@ -34,7 +33,7 @@ func CreateToDo(c *gin.Context) {
 		return
 	}
 
-	isCreateSuccessful, results := repositories.CreateToDo(app, client, ctx, req)
+	isCreateSuccessful, results := repositories.CreateToDo(client, ctx, req)
 	if !isCreateSuccessful {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create todo"})
 		return
