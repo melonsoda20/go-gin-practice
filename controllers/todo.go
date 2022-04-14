@@ -69,3 +69,26 @@ func GetAllToDo(c *gin.Context) {
 		"results": results,
 	})
 }
+
+func GetToDo(c *gin.Context) {
+	ctx := services.GetBackgroundContext()
+	ID := c.Param("id")
+
+	client, isClientExists := services.GetFirestoreClient(c)
+	if !isClientExists {
+		services.LogErrorMessage("firestore client does not exists")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Can't create todo at the moment"})
+		return
+	}
+
+	isGetSuccessful, results := services.GetToDo(client, ctx, ID)
+	if !isGetSuccessful {
+		services.LogErrorMessage(fmt.Sprintf("Error: %v", results.Data))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve ToDos"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"results": results,
+	})
+}

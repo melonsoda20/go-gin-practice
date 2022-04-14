@@ -11,6 +11,7 @@ import (
 type ToDoService interface {
 	CreateToDo(client firestore.Client, ctx context.Context) (*firestore.WriteResult, error)
 	GetAllToDo(client firestore.Client, ctx context.Context) ([]Todo, error)
+	GetToDo(client firestore.Client, ctx context.Context, ID string) (Todo, error)
 }
 
 type Todo struct {
@@ -49,4 +50,17 @@ func (t Todo) GetAllToDo(client firestore.Client, ctx context.Context) ([]Todo, 
 	}
 
 	return todoDatas, nil
+}
+
+func (t Todo) GetToDo(client firestore.Client, ctx context.Context, ID string) (Todo, error) {
+	var todo Todo
+	dsnap, err := client.Collection("ToDo").Doc(ID).Get(ctx)
+	if err != nil {
+		return todo, err
+	}
+	mapErr := dsnap.DataTo(&todo)
+	if mapErr != nil {
+		return todo, mapErr
+	}
+	return todo, nil
 }

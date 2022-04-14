@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"cloud.google.com/go/firestore"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func CreateToDo(client firestore.Client, ctx context.Context, req models.CreateToDoReqDTO) (bool, models.GenericResponse) {
@@ -50,5 +52,30 @@ func GetAllToDo(client firestore.Client, ctx context.Context) (isSuccess bool, r
 
 	return true, models.GenericResponse{
 		Data: todoDatas,
+	}
+}
+
+func GetToDo(client firestore.Client, ctx context.Context, ID string) (isSuccess bool, resp models.GenericResponse) {
+	var todoData entities.Todo
+	data, err := todoData.GetToDo(client, ctx, ID)
+
+	if err != nil {
+		if status.Code(err) == codes.NotFound {
+			return true, models.GenericResponse{
+				Data: nil,
+			}
+		} else {
+			errorResponse := models.ErrorResponse{
+				Message: err.Error(),
+			}
+
+			return false, models.GenericResponse{
+				Data: errorResponse,
+			}
+		}
+	}
+
+	return true, models.GenericResponse{
+		Data: data,
 	}
 }

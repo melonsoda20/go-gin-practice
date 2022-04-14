@@ -15,3 +15,7 @@ func CreateToDo(client firestore.Client, ctx context.Context, req models.CreateT
 func GetAllToDo(client firestore.Client, ctx context.Context) (isSuccess bool, resp models.GenericResponse) {
 	return repositories.GetAllToDo(client, ctx)
 }
+
+func GetToDo(client firestore.Client, ctx context.Context, ID string) (isSuccess bool, resp models.GenericResponse) {
+	return repositories.GetToDo(client, ctx, ID)
+}
