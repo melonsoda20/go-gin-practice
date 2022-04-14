@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"gin-todo-app/database/repositories"
+	"fmt"
 	"gin-todo-app/models"
 	"gin-todo-app/services"
 	"net/http"
@@ -35,7 +35,7 @@ func CreateToDo(c *gin.Context) {
 		return
 	}
 
-	isCreateSuccessful, results := repositories.CreateToDo(client, ctx, req)
+	isCreateSuccessful, results := services.CreateToDo(client, ctx, req)
 	if !isCreateSuccessful {
 		services.LogErrorMessage(results.Data.(string))
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create todo"})
@@ -46,4 +46,26 @@ func CreateToDo(c *gin.Context) {
 		"results": results,
 	})
 
+}
+
+func GetAllToDo(c *gin.Context) {
+	ctx := services.GetBackgroundContext()
+
+	client, isClientExists := services.GetFirestoreClient(c)
+	if !isClientExists {
+		services.LogErrorMessage("firestore client does not exists")
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Can't create todo at the moment"})
+		return
+	}
+
+	isGetSuccessful, results := services.GetAllToDo(client, ctx)
+	if !isGetSuccessful {
+		services.LogErrorMessage(fmt.Sprintf("Error: %v", results.Data))
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to retrieve ToDos"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"results": results,
+	})
 }

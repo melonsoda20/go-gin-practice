@@ -17,6 +17,7 @@ func InitializeRouter(app firebase.App, client firestore.Client) *gin.Engine {
 	todoGroup := router.Group("todo")
 	{
 		todoGroup.POST("createtodo", controllers.CreateToDo)
+		todoGroup.GET("getalltodo", controllers.GetAllToDo)
 	}
 
 	return router

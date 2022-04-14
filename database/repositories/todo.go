@@ -32,3 +32,23 @@ func CreateToDo(client firestore.Client, ctx context.Context, req models.CreateT
 		Data: todoData,
 	}
 }
+
+func GetAllToDo(client firestore.Client, ctx context.Context) (isSuccess bool, resp models.GenericResponse) {
+	var todoData entities.Todo
+
+	todoDatas, err := todoData.GetAllToDo(client, ctx)
+
+	if err != nil {
+		errorResponse := models.ErrorResponse{
+			Message: err.Error(),
+		}
+
+		return false, models.GenericResponse{
+			Data: errorResponse,
+		}
+	}
+
+	return true, models.GenericResponse{
+		Data: todoDatas,
+	}
+}
