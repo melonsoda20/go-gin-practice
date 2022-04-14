@@ -19,3 +19,7 @@ func GetAllToDo(client firestore.Client, ctx context.Context) (isSuccess bool, r
 func GetToDo(client firestore.Client, ctx context.Context, ID string) (isSuccess bool, resp models.GenericResponse) {
 	return repositories.GetToDo(client, ctx, ID)
 }
+
+func UpdateToDo(client firestore.Client, ctx context.Context, req models.UpdateToDoReqDTO, ID string) (bool, models.GenericResponse) {
+	return repositories.UpdateToDo(client, ctx, req, ID)
+}

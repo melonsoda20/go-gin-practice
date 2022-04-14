@@ -79,3 +79,26 @@ func GetToDo(client firestore.Client, ctx context.Context, ID string) (isSuccess
 		Data: data,
 	}
 }
+
+func UpdateToDo(client firestore.Client, ctx context.Context, req models.UpdateToDoReqDTO, ID string) (bool, models.GenericResponse) {
+	todoData := entities.Todo{
+		Name:       req.Name,
+		IsTaskDone: req.IsTaskDone,
+	}
+
+	_, err := todoData.UpdateToDo(client, ctx, ID)
+
+	if err != nil {
+		errorResponse := models.ErrorResponse{
+			Message: err.Error(),
+		}
+
+		return false, models.GenericResponse{
+			Data: errorResponse,
+		}
+	}
+
+	return true, models.GenericResponse{
+		Data: todoData,
+	}
+}

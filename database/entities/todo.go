@@ -64,3 +64,12 @@ func (t Todo) GetToDo(client firestore.Client, ctx context.Context, ID string) (
 	}
 	return todo, nil
 }
+
+func (t Todo) UpdateToDo(client firestore.Client, ctx context.Context, ID string) (*firestore.WriteResult, error) {
+	res, err := client.Collection("ToDo").Doc(ID).Set(ctx, map[string]interface{}{
+		"name":       t.Name,
+		"isTaskDone": t.IsTaskDone,
+	}, firestore.MergeAll)
+
+	return res, err
+}
