@@ -4,7 +4,6 @@ import (
 	"context"
 	"gin-todo-app/database/entities"
 	"gin-todo-app/models"
-	"gin-todo-app/services"
 	"time"
 
 	"cloud.google.com/go/firestore"
@@ -20,9 +19,8 @@ func CreateToDo(client firestore.Client, ctx context.Context, req models.CreateT
 	_, err := todoData.CreateToDo(client, ctx)
 
 	if err != nil {
-		services.LogError(err)
 		errorResponse := models.ErrorResponse{
-			Message: "Failed to create todo",
+			Message: err.Error(),
 		}
 
 		return false, models.GenericResponse{
