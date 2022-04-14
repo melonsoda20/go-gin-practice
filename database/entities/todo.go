@@ -73,3 +73,10 @@ func (t Todo) UpdateToDo(client firestore.Client, ctx context.Context, ID string
 
 	return res, err
 }
+func (t Todo) DeleteToDo(client firestore.Client, ctx context.Context, ID string) (*firestore.WriteResult, error) {
+	dsnap, err := client.Collection("ToDo").Doc(ID).Delete(ctx)
+	if err != nil {
+		return dsnap, err
+	}
+	return dsnap, nil
+}

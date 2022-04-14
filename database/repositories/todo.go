@@ -102,3 +102,28 @@ func UpdateToDo(client firestore.Client, ctx context.Context, req models.UpdateT
 		Data: todoData,
 	}
 }
+
+func DeleteToDo(client firestore.Client, ctx context.Context, ID string) (isSuccess bool, resp models.GenericResponse) {
+	var todoData entities.Todo
+	data, err := todoData.DeleteToDo(client, ctx, ID)
+
+	if err != nil {
+		if status.Code(err) == codes.NotFound {
+			return true, models.GenericResponse{
+				Data: nil,
+			}
+		} else {
+			errorResponse := models.ErrorResponse{
+				Message: err.Error(),
+			}
+
+			return false, models.GenericResponse{
+				Data: errorResponse,
+			}
+		}
+	}
+
+	return true, models.GenericResponse{
+		Data: data,
+	}
+}

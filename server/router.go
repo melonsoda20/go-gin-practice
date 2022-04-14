@@ -20,6 +20,7 @@ func InitializeRouter(app firebase.App, client firestore.Client) *gin.Engine {
 		todoGroup.GET("getall", controllers.GetAllToDo)
 		todoGroup.GET("get/:id", controllers.GetToDo)
 		todoGroup.PUT("update/:id", controllers.UpdateToDo)
+		todoGroup.DELETE("delete/:id", controllers.DeleteToDo)
 	}
 
 	return router
