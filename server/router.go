@@ -7,12 +7,13 @@ import (
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
 	"github.com/gin-gonic/gin"
+	"github.com/gomodule/redigo/redis"
 )
 
-func InitializeRouter(app firebase.App, client firestore.Client) *gin.Engine {
+func InitializeRouter(app firebase.App, client firestore.Client, redis *redis.Pool) *gin.Engine {
 	router := gin.Default()
 
-	router.Use(middlewares.FirebaseMiddleware(app, client))
+	router.Use(middlewares.SetMiddleware(app, client, redis))
 
 	todoGroup := router.Group("todo")
 	{
