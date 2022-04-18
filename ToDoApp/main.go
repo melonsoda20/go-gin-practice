@@ -19,6 +19,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	router := server.InitializeRouter(*app, *client, redis)
+	router := server.InitializeRouter(*app, *client, *redis)
+
 	router.Run(":8080")
 }
