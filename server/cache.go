@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"gin-todo-app/models"
 	"gin-todo-app/services"
 
@@ -25,9 +24,10 @@ func ConnectRedis() (*redis.Pool, error) {
 	}
 
 	redisConfig := models.RedisConfig{}
-	services.DeserializeFile(configData, &redisConfig)
-
-	fmt.Printf("%#v", redisConfig)
+	json_error := services.DeserializeFile(configData, &redisConfig)
+	if data_err != nil {
+		return nil, json_error
+	}
 
 	redisPool := &redis.Pool{
 		MaxIdle: maxConnections,
