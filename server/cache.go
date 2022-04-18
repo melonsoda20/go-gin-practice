@@ -24,16 +24,14 @@ func ConnectRedis() (*redis.Pool, error) {
 		return nil, data_err
 	}
 
-	redisConfig, json_err := services.DeserializeFile(configData, &models.RedisConfig{})
-	if json_err != nil {
-		return nil, json_err
-	}
+	redisConfig := models.RedisConfig{}
+	services.DeserializeFile(configData, &redisConfig)
 
 	fmt.Printf("%#v", redisConfig)
 
 	redisPool := &redis.Pool{
 		MaxIdle: maxConnections,
-		Dial:    func() (redis.Conn, error) { return redis.Dial("tcp", redisConfig.(models.RedisConfig).URL) },
+		Dial:    func() (redis.Conn, error) { return redis.Dial("tcp", redisConfig.URL) },
 	}
 
 	return redisPool, nil
