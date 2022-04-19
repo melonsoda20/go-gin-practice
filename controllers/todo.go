@@ -49,6 +49,38 @@ func CreateToDo(c *gin.Context) {
 		return
 	}
 
+	pubsubconfig, config_err := services.GetPubSubConfig()
+	if config_err != nil {
+		services.LogError(config_err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Can't create todo at the moment"})
+		return
+	}
+
+	pubsubclient, pubsubclient_err := services.InitPubSubClient(ctx, pubsubconfig)
+	if pubsubclient_err != nil {
+		services.LogError(config_err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Can't create todo at the moment"})
+		return
+	}
+
+	defer pubsubclient.Close()
+
+	serverID, publish_err := services.PublishMessage(pubsubclient, ctx, constants.PubSubKeys.CreateToDoTopicID, "CreatingToDo")
+	if publish_err != nil {
+		services.LogError(publish_err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Can't create todo at the moment"})
+		return
+	}
+
+	messageData, receive_err := services.ReceiveMessage(pubsubclient, ctx, serverID)
+	if publish_err != nil {
+		services.LogError(receive_err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Can't create todo at the moment"})
+		return
+	}
+
+	fmt.Println(messageData)
+
 	isCreateSuccessful, results := services.CreateToDo(client, ctx, req)
 	if !isCreateSuccessful {
 		services.LogErrorMessage(results.Data.(string))

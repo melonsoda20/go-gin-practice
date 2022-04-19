@@ -25,7 +25,7 @@ func ConnectRedis() (*redis.Pool, error) {
 
 	redisConfig := models.RedisConfig{}
 	json_error := services.DeserializeJSON(configData, &redisConfig)
-	if data_err != nil {
+	if json_error != nil {
 		return nil, json_error
 	}
 
